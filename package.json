@@ -1,0 +1,28 @@
+{
+  "name": "dragonfly_events",
+  "version": "1.0.0",
+  "description": "A sample application created as part of the interview process.",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Peretus/dragonfly_events.git"
+  },
+  "author": "Casey McNeil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Peretus/dragonfly_events/issues"
+  },
+  "homepage": "https://gitlab.com/Peretus/dragonfly_events#README",
+  "dependencies": {
+    "babel-jest": "^23.0.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^23.1.0",
+    "react-scripts": "^1.1.4",
+    "react-test-renderer": "^16.4.0"
+  }
+}
