@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import NotFound from './NotFound';
-import App from './App';
+import EventsList from './EventsList';
 
 const Router = () => (
   <BrowserRouter>
     <Switch>
-      <Route exact path="/" component={App} />
+      <Route exact path="/" component={EventsList} />
       <Route component={NotFound} />
     </Switch>
   </BrowserRouter>

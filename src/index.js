@@ -7,4 +7,4 @@ import Router from './components/Router';
 // in files with a .js extension.
 
 // eslint-disable-next-line react/jsx-filename-extension
-render(<Router />, document.querySelector('#main'));
+render(<Router />, document.getElementById('main'));
