@@ -1,9 +1,43 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Icon } from 'antd';
 import styled from 'styled-components';
+import { isEmpty, isArray, delay, keys } from 'lodash';
+import { addMinutes, isAfter } from 'date-fns';
 import API from '../endpoint';
 import EventCard from './EventCard';
+
 // import PropTypes from 'prop-types';
+const Loading = styled(Icon)`
+  font-size: 40px;
+  margin-top: 200px;
+`;
+
+const NoEventsErrorMessage = styled.div`
+  font-size: 20px;
+  margin-top: 200px;
+`;
+
+const AvailableEvents = ({ events, refetching }) => {
+  return (
+    refetching ?
+      <NoEventsErrorMessage>No events were loaded. Hang tight while we retry...</NoEventsErrorMessage> :
+      events.map(event => (
+        <EventCard event={event} key={event.id} />
+      ))
+  );
+};
+
+// function updateStorage(itemName, itemToStore) {
+//   const now = new Date();
+//   const iso = now.toISOString();
+//   // console.log("Iso: ", iso);
+//   const strigifiedItem = JSON.stringify({
+//     timeFetched: iso,
+//     cache: itemToStore[0],
+//   });
+//   // console.log("Updated storage!", strigifiedItem)
+//   localStorage.setItem(itemName, strigifiedItem);
+// }
 
 // eslint-disable-next-line react/prefer-stateless-function
 class EventsList extends React.Component {
@@ -16,21 +50,29 @@ class EventsList extends React.Component {
     this.fetchCurrentEvents();
   }
 
-  get previouslyLoadedEvents() {
-    return this.localStorage.getItem('events');
-  }
+  // componentDidMount() {
+  //   this.fetchCurrentEvents();
+  // }
 
   fetchCurrentEvents() {
-    API.get('events', {
-      // auth: {
-      //   username: 'yep, anything!',
-      //   password: 'evalpass',
-      // },
-      // headers: {
-      //   'Target-Endpoint': 'http://dev.dragonflyathletics.com:1337/api/dfkey/',
-      // },
-      // 'Access-Control-Allow-Origin': '*',
-    })
+    // const MINUTES_UNTIL_CACHE_EXPIRES = 2;
+    // const beginningOfTime = new Date(0);
+    // const lastUpdatedEvents = JSON.parse(localStorage.getItem('events') || '{}');
+    // const cacheExpiryTime = addMinutes(lastUpdatedEvents.timeFetched || beginningOfTime, MINUTES_UNTIL_CACHE_EXPIRES);
+    // const cacheIsExpired = isAfter(new Date(), cacheExpiryTime);
+
+    // if (!cacheIsExpired) {
+    //   console.log("cache is current");
+    //   this.setState({
+    //     events: lastUpdatedEvents.cache,
+    //     loading: false,
+    //   });
+    //   return;
+    // }
+
+    // console.log("Cache is expired: ", keys(lastUpdatedEvents));
+    localStorage.removeItem('events');
+    API.get('events', {})
       .then((res) => {
         // console.log(res);
         // console.log(res.data);
@@ -38,7 +80,10 @@ class EventsList extends React.Component {
           events: res.data,
           loading: false,
         });
-      }).catch();
+        // updateStorage('events', res.data);
+      }).catch(() => {
+        this.setState({ loading: false });
+      });
   }
 
 
@@ -62,13 +107,20 @@ class EventsList extends React.Component {
   render() {
     const { loading, events } = this.state;
 
+    const shouldRefetchEvents = !loading && (isEmpty(events) || !isArray(events));
+
+    if (shouldRefetchEvents) {
+      delay(() => {
+        this.setState({ loading: true });
+        this.fetchCurrentEvents();
+      }, 3000);
+    }
+
     return (
       <Row type="flex" justify="center">{
         loading ?
-          <div>Loading...</div> :
-          events.map(event => (
-            <EventCard event={event} key={event.id} />
-          ))}
+          <Loading type="loading" /> :
+          <AvailableEvents refetching={shouldRefetchEvents} events={events} />}
       </Row>
     );
   }

@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ThreeBounce } from 'styled-spinkit';
 import Button from 'antd/lib/button';
 import styled, { css } from 'styled-components';
+import { withRouter } from 'react-router-dom';
 import { Card, Icon, Avatar, Col } from 'antd';
 import LazyLoad from 'react-lazy-load';
+import { startsWith } from 'lodash';
 
 import API from '../endpoint';
-import defaultImage from '../images/defaultImage.png';
+import defaultImage from '../images/default-card-image.png';
 
 const Meta = styled(Card.Meta)``;
 
@@ -26,6 +27,7 @@ const StyledEventCard = styled(Card)`
 
 const StyledPreviewImage = styled.img`
   height: 200px;
+  object-fit: cover;
 `;
 
 const StyledAddress = styled.div`
@@ -53,10 +55,13 @@ const StyledEventDescription = styled.div`
 `;
 
 
-const PreviewImage = ({base64Image, imageDescription}) => {
-  return (
-    base64Image && <StyledPreviewImage alt={`${imageDescription}`} src={`data:image/jpeg;base64,${base64Image}`} />
-  );
+const PreviewImage = ({ base64Image, imageDescription, useDefaultImage }) => {
+  // console.log("startswith: ", startsWith);
+  const thumbnailImage = startsWith(base64Image, '/9j') ?
+    `data:image/jpeg;base64,${base64Image}` :
+    defaultImage;
+
+  return <StyledPreviewImage alt={`${imageDescription}`} src={thumbnailImage} />;
 };
 
 const EventLocationInfo = ({ event }) => {
@@ -91,18 +96,23 @@ class EventCard extends React.Component {
     this.state = {
       thumbnail: null,
       loading: true,
+      useDefaultImage: false,
+      error: null,
+      expanded: false,
     };
   }
 
-  fetchThumbnail({ images, id: eventId }) {
+  setThumbnail({ images, id: eventId }) {
     const featuredImage = images[0];
 
     return featuredImage ?
       this.requestImageFromServer(eventId, featuredImage.id) :
-      defaultImage;
+      this.setState({ useDefaultImage: true, loading: false });
   }
 
   requestImageFromServer(eventId, imageId) {
+    // console.log("Fetching image from server heres the id: ", imageId);
+    // console.log("Fetching image from server heres the event id: ", eventId);
     API.get(`events/${eventId}/media/${imageId}`, {
       responseType: 'arraybuffer',
     })
@@ -113,9 +123,16 @@ class EventCard extends React.Component {
           loading: false,
         });
       })
-      .catch(this.setState({ loading: false }));
+      .catch((error) => {
+        console.log('Error in fetching card.  Here is the event id: ', eventId, 'and here is the imageId: ', imageId);
+        this.setState({
+          loading: false,
+          // useDefaultImage: true,
+          error: 'This card could not be loaded.',
+        });
+      });
   }
-        /* <Card className="event-card">
+  /* <Card className="event-card">
         <div className="event-name">{event.name}</div>
         <div className="event-description">{event.description}</div>
         <div className="event-location">
@@ -133,16 +150,17 @@ class EventCard extends React.Component {
 
 
   render() {
-    const { thumbnail, loading } = this.state;
-    const { event } = this.props;
+    const { thumbnail, loading, useDefaultImage } = this.state;
+    const { event, history } = this.props;
     return (
       <Col xs={{ span: 16, gutter: 4 }} md={{ span: 10 }} lg={{ span: 7 }} >
-        <LazyLoad height={700} offset={1000} onContentVisible={() => this.fetchThumbnail(event)}>
+        <LazyLoad height={700} offset={1000} onContentVisible={() => this.setThumbnail(event)}>
           <StyledEventCard
+            onClick={() => history.push(`/${event.id}`)}
             loading={loading}
             hoverable
-            cover={<PreviewImage base64Image={thumbnail} imageDescription={event.name} />}
-            actions={[<Icon type="compass" />, <Icon type="eye" />]}
+            cover={!loading && <PreviewImage base64Image={thumbnail} useDefaultImage={useDefaultImage} imageDescription={event.name} />}
+            actions={[<Icon type="eye" />]}
           >
             <Meta
               title={<EventLocationInfo event={event} />}
@@ -165,4 +183,4 @@ EventCard.propTypes = {
   }).isRequired,
 };
 
-export default EventCard;
+export default withRouter(EventCard);

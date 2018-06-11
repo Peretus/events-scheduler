@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 import { cantankerousEndpoint } from './secrets';
 
 const axiosInstance = axios.create({
@@ -8,6 +9,7 @@ const axiosInstance = axios.create({
     username: 'yep, anything!',
     password: 'evalpass',
   },
+  timeout: 5000,
   // 'Access-Control-Allow-Origin': '*',
   headers: {
     common: {
@@ -17,5 +19,7 @@ const axiosInstance = axios.create({
     },
   },
 });
+
+axiosRetry(axiosInstance, { retries: 3 });
 
 export default axiosInstance;
