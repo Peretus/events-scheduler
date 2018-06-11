@@ -1,21 +1,24 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { cantankerousEndpoint } from './secrets';
+import {
+  cantankerousEndpoint,
+  username,
+  password,
+  corsDefeater,
+} from './secrets';
 
 const axiosInstance = axios.create({
-  // baseURL: 'http://dev.dragonflyathletics.com:1337/api/dfkey/',
-  baseURL: 'https://dragonfly-cors-defeater.herokuapp.com/',
+  baseURL: corsDefeater,
   auth: {
-    username: 'yep, anything!',
-    password: 'evalpass',
+    username,
+    password,
   },
   timeout: 5000,
-  // 'Access-Control-Allow-Origin': '*',
   headers: {
     common: {
       'Content-Type': 'application/json;charset=UTF-8',
       'Access-Control-Allow-Origin': '*',
-      'Target-URL': 'http://dev.dragonflyathletics.com:1337/api/dfkey/',
+      'Target-URL': cantankerousEndpoint,
     },
   },
 });
