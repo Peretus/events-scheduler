@@ -156,7 +156,7 @@ class EventCard extends React.Component {
       <Col xs={{ span: 16, gutter: 4 }} md={{ span: 10 }} lg={{ span: 7 }} >
         <LazyLoad height={700} offset={1000} onContentVisible={() => this.setThumbnail(event)}>
           <StyledEventCard
-            onClick={() => history.push(`/events/${event.id}`)}
+            onClick={() => history.push(`/${event.id}`)}
             loading={loading}
             hoverable
             cover={!loading && <PreviewImage base64Image={thumbnail} useDefaultImage={useDefaultImage} imageDescription={event.name} />}
