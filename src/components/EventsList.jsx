@@ -1,4 +1,6 @@
 import React from 'react';
+import { Row, Col } from 'antd';
+import styled from 'styled-components';
 import API from '../endpoint';
 import EventCard from './EventCard';
 // import PropTypes from 'prop-types';
@@ -36,17 +38,38 @@ class EventsList extends React.Component {
           events: res.data,
           loading: false,
         });
-      });
+      }).catch();
   }
 
 
+  // render() {
+  //   const { loading, events } = this.state;
+
+  //   return (
+  //     <Row type="flex" justify="center">
+  //       <Col span={24}>{
+  //         loading ?
+  //           <div>Loading...</div> :
+  //           <MasonryLayout disableImagesLoaded={false} updateOnEachImageLoad={false} options={masonryOptions}>
+  //             {events.map(event => (
+  //               <EventCard event={event} key={event.id} />
+  //             ))}
+  //           </MasonryLayout>}
+  //       </Col>
+  //     </Row>
+  //   );
+  // }
   render() {
     const { loading, events } = this.state;
 
     return (
-      loading ?
-        <div>Loading...</div> :
-        events.map(event => <EventCard event={event} key={event.id} />)
+      <Row type="flex" justify="center">{
+        loading ?
+          <div>Loading...</div> :
+          events.map(event => (
+            <EventCard event={event} key={event.id} />
+          ))}
+      </Row>
     );
   }
 }

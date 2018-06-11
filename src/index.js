@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import 'antd/dist/antd.css';
 import Router from './components/Router';
 
 // react-scripts relies on a file named index.js, but
