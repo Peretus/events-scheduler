@@ -1,6 +1,7 @@
+import { startsWith } from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { startsWith } from 'lodash';
 import defaultImage from '../images/default-card-image.png';
 
 const StyledPreviewImage = styled.img`
@@ -15,5 +16,15 @@ const PreviewImage = ({ base64Image, imageDescription }) => {
 
   return <StyledPreviewImage alt={`${imageDescription}`} src={thumbnailImage} />;
 };
+
+PreviewImage.propTypes = {
+  base64Image: PropTypes.string,
+  imageDescription: PropTypes.string.isRequired,
+};
+
+PreviewImage.defaultProps = {
+  base64Image: '',
+};
+
 
 export default PreviewImage;

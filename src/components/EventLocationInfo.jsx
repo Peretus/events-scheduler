@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+import { eventType } from '../types';
 
 const StyledAddress = styled.div`
   font-size: 1em;
@@ -34,6 +36,10 @@ const EventLocationInfo = ({ event }) => {
       </StyledAddress>
     </StyledEventLocationInfo>
   );
+};
+
+EventLocationInfo.propTypes = {
+  event: PropTypes.shape(eventType).isRequired,
 };
 
 export default EventLocationInfo;

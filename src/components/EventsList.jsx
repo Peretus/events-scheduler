@@ -1,7 +1,10 @@
-import React from 'react';
-import { Row, Icon } from 'antd';
-import styled from 'styled-components';
 import { isEmpty, isArray, delay } from 'lodash';
+import { Row, Icon } from 'antd';
+import PropTypes, { arrayOf } from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
+
+import { eventType } from '../types/index';
 import API from '../endpoint';
 import EventCard from './EventCard';
 
@@ -66,5 +69,10 @@ class EventsList extends React.Component {
     );
   }
 }
+
+AvailableEvents.propTypes = {
+  events: arrayOf(PropTypes.shape(eventType)).isRequired,
+  refetching: PropTypes.bool.isRequired,
+};
 
 export default EventsList;

@@ -1,13 +1,16 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { withRouter } from 'react-router-dom';
 import { Card, Icon, Col } from 'antd';
+import { withRouter } from 'react-router-dom';
 import LazyLoad from 'react-lazy-load';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import styled, { css } from 'styled-components';
 
-import PreviewImage from './PreviewImage';
-import EventLocationInfo from './EventLocationInfo';
-import EventDescription from './EventDescription';
+import { eventType } from '../types/index';
 import API from '../endpoint';
+import EventDescription from './EventDescription';
+import EventLocationInfo from './EventLocationInfo';
+import PreviewImage from './PreviewImage';
 
 const Meta = styled(Card.Meta)``;
 
@@ -88,5 +91,10 @@ class EventCard extends React.Component {
     );
   }
 }
+
+EventCard.propTypes = {
+  event: PropTypes.shape(eventType).isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
+};
 
 export default withRouter(EventCard);
